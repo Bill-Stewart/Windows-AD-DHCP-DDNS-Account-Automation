@@ -1,7 +1,7 @@
 <!-- omit in toc -->
 # Update DHCP Dynamic DNS Registration Credentials Automatically Using a Group Managed Service Account (gMSA)
 
-In an Active Directory domain using AD-integrated DNS zones, the general recommendation is to configure the DHCP server to use specify an unprivileged domain account to register dynamic DNS records on behalf of DHCP clients. Currently this account must be a domain user account and cannot be a Group Managed Service Account (gMSA).
+In an Active Directory domain using AD-integrated DNS zones, the general recommendation is to configure the DHCP server to use an unprivileged domain account to register dynamic DNS records on behalf of DHCP clients. Currently this account must be a domain user account and cannot be a Group Managed Service Account (gMSA).
 
 While it is true that the DHCP dynamic DNS registration account cannot be a gMSA, we can work around this limitation by creating a gMSA and a scheduled task that runs a [script](https://gist.github.com/Bill-Stewart/fd588bc4fd42a9cd6eaece83e465fcdc) that performs the following actions:
 
@@ -103,6 +103,7 @@ $params = @{
   "Name" = $gMSAName
   "DnsHostName" = "{0}.{1}" -f $gMSAName,$domainDNSName
   "Description" = "Resets DHCP dynamic DNS registration credentials on DHCP servers."
+  "KerberosEncryptionType" = "AES128","AES256"
   "TrustedForDelegation" = $false
   "ManagedPasswordIntervalInDays" = 30  # Can only be set at creation
   "PrincipalsAllowedToRetrieveManagedPassword" = $gMSAGroupAllowed
